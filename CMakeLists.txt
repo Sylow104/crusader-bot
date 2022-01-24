@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+project(crusader-bot VERSION 0.0.1)
+FILE(GLOB SRC_CPP src/*.cpp)
+FILE(GLOB SRC_C src/*.c)
+add_executable(crusader_bot ${SRC_CPP} ${SRC_C})
+target_include_directories(crusader_bot PUBLIC include)
