@@ -30,7 +30,6 @@ int reaction::add(unsigned long new_user)
 		tail = to_queue;
 	} else {
 		tail->next = to_queue;
-		to_queue->previous = tail;
 		tail = to_queue;
 	}
 	return 0;
@@ -39,11 +38,12 @@ int reaction::add(unsigned long new_user)
 int reaction::del(unsigned long target_id)
 {
 	/* search and return */
-	react_entry *current = 0x0, *previous, *next;
+	react_entry *current = 0x0, *previous = 0x0, *next;
 	bool was_tail = false;
 	bool was_head = false;
 	/* linear search */
-	for (current = tail; current; current = current->next) {
+	for (current = head; current; previous = current, 
+			current = current->next) {
 		if (current->id() == target_id) {
 			break;
 		}
@@ -60,30 +60,12 @@ int reaction::del(unsigned long target_id)
 	}
 
 	/* isolate the entry */
-	previous = current->previous;
 	next = current->next;
 	num_reacts--;
 
 	delete current;
-
-	/* case of singleton */
-	if (!next && !previous) {
-		tail = 0x0;
-		head = 0x0;
-		return 1; /* list is now empty */
-	}
-
-	/* find out algorithm for deleting from linked lists */
-	
-	/* case of popping from the tail */
-	if (was_tail) {
-		previous->next = 0x0;
-		tail = previous;
-	}
-	/* case of popping from the head */
-	if (was_head) {
-		next->previous = 0x0;
-		head = next;
+	if (previous) {
+		previous->next = next;
 	}
 	
 	return 0;

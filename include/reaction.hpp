@@ -8,7 +8,7 @@ class react_entry : public person
 	react_entry(unsigned long discord_id);
 	~react_entry();
 
-	react_entry *next = 0x0, *previous = 0x0;
+	react_entry *next = 0x0;
 };
 
 class reaction
