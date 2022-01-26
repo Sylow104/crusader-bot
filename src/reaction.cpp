@@ -32,6 +32,7 @@ int reaction::add(unsigned long new_user)
 		tail->next = to_queue;
 		tail = to_queue;
 	}
+	num_reacts++;
 	return 0;
 }
 
@@ -66,6 +67,13 @@ int reaction::del(unsigned long target_id)
 	delete current;
 	if (previous) {
 		previous->next = next;
+	}
+
+	if (was_tail) {
+		tail = previous;
+	}
+	if (was_head) {
+		head = next;
 	}
 	
 	return 0;
