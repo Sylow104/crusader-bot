@@ -19,11 +19,19 @@ reaction::reaction(unsigned int react_id)
 
 reaction::~reaction()
 {
-	;
+	react_entry *current, *next;
+
+	current = head;
+	while (current) {
+		next = current->next;
+		delete current;
+		current = next;
+	}
 }
 
 unsigned int reaction::size()
 {
+	fprintf(stderr, "Number of reactions %u\n", num_reacts);
 	return num_reacts;
 }
 
