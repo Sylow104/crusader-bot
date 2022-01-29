@@ -63,7 +63,6 @@ int reaction::del(unsigned long target_id)
 		fprintf(stderr, "Cannot find user id %ld\n", target_id);
 		return -1;
 	}
-	printf("Hello world\n");
 
 	next = current->next;
 	if (current == head) {
@@ -72,13 +71,12 @@ int reaction::del(unsigned long target_id)
 	if (current == tail) {
 		tail = previous;
 	}
-	printf("Hello world2\n");
 
-	previous->next = next;
-	printf("Hello world3\n");
+	if (previous) {
+		previous->next = next;
+	}
 	delete current;
 	num_reacts--;
-	fprintf(stderr, "Deleted user id %ld\n", target_id);
 	fprintf(stderr, "Deleted user id %ld\n", target_id);
 	
 	return 0;
