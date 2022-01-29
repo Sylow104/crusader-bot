@@ -22,6 +22,7 @@ class reaction
 
 	int add(unsigned long new_user);
 	int del(unsigned long target_id);
+	react_entry *search(unsigned long target_id);
 
 	private:
 	unsigned int num_reacts = 0;
@@ -29,6 +30,8 @@ class reaction
 	
 	react_entry *head = 0x0;
 	react_entry *tail = 0x0;
+
+	react_entry *search(unsigned long target_id, react_entry **previous);
 };
 
 #endif /* _REACTION_ */

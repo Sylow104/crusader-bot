@@ -1,8 +1,20 @@
 #include "reaction.hpp"
+#include <stdio.h>
+
+react_entry::react_entry(unsigned long discord_id) :
+	person(discord_id)
+{
+	;
+}
+
+react_entry::~react_entry()
+{
+	;
+}
 
 reaction::reaction(unsigned int react_id)
 {
-	;
+	id_react = react_id;
 }
 
 reaction::~reaction()
@@ -22,7 +34,13 @@ unsigned int reaction::id()
 
 int reaction::add(unsigned long new_user)
 {
-	react_entry *to_queue = new react_entry(new_user);
+	react_entry *to_queue;
+	if (search(new_user)) {
+		fprintf(stderr, "No need to add user %ld\n", new_user);
+		return -1;
+	}
+	
+	to_queue = new react_entry(new_user);
 	if (!head) {
 		head = to_queue;
 	}
@@ -33,48 +51,54 @@ int reaction::add(unsigned long new_user)
 		tail = to_queue;
 	}
 	num_reacts++;
+	fprintf(stderr, "Added user id %ld\n", new_user);
 	return 0;
 }
 
 int reaction::del(unsigned long target_id)
 {
-	/* search and return */
 	react_entry *current = 0x0, *previous = 0x0, *next;
-	bool was_tail = false;
-	bool was_head = false;
-	/* linear search */
-	for (current = head; current; previous = current, 
-			current = current->next) {
+	current = search(target_id, &previous);
+	if (!current) {
+		fprintf(stderr, "Cannot find user id %ld\n", target_id);
+		return -1;
+	}
+
+	next = current->next;
+	if (current == head) {
+		head = next;
+	}
+	if (current == tail) {
+		tail = previous;
+	}
+
+	previous->next = next;
+	delete current;
+	fprintf(stderr, "Deleted user id %ld\n", target_id);
+	num_reacts--;
+	
+	return 0;
+}
+
+react_entry *reaction::search(unsigned long target_id)
+{
+	react_entry *placeholder;
+	return search(target_id, &placeholder);
+}
+
+react_entry *reaction::search(unsigned long target_id, react_entry **previous)
+{
+	react_entry *current = 0x0;
+	for (current = head; current;
+			*previous = current, current = current->next) {
 		if (current->id() == target_id) {
 			break;
 		}
 	}
-	if (!current) {
-		return -1;
+	if (current) {
+		fprintf(stderr, "Found user id %ld\n", 
+			target_id);
 	}
 
-	if (current == tail) {
-		was_tail = true;
-	}
-	if (current == head) {
-		was_head = true;
-	}
-
-	/* isolate the entry */
-	next = current->next;
-	num_reacts--;
-
-	delete current;
-	if (previous) {
-		previous->next = next;
-	}
-
-	if (was_tail) {
-		tail = previous;
-	}
-	if (was_head) {
-		head = next;
-	}
-	
-	return 0;
+	return current;
 }
